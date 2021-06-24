@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import * as entity from "./entity";
-import express, { Application } from "express";
-import bodyParser from "body-parser";
+import express from "express";
 import { FindManyOptions, getRepository, Repository } from "typeorm";
 import cors from "cors";
 
@@ -19,10 +18,10 @@ const connection = createConnection({
 });
 
 const app = express();
-app.listen(3000);
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors());
+app.listen(3000);
 
 let repository: Repository<entity.User | entity.Book>;
 
