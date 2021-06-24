@@ -13,6 +13,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/cors": "^2.8.10",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "cors": "^2.8.5",
