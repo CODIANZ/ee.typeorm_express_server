@@ -26,34 +26,13 @@ app.use(cors());
 
 let repository: Repository<entity.User | entity.Book>;
 
-type req_base_t = {
-  entity: entity.entity_name_t;
-};
-
-type req_user_t = req_base_t & {
-  entity: "User";
-  query: FindManyOptions<entity.entity_map_t["User"]>;
-};
-
-type req_book_t = req_base_t & {
-  entity: "Book";
-  query: FindManyOptions<entity.entity_map_t["Book"]>;
-};
-
-interface PostRequest extends Request {
-  exparam: req_user_t | req_book_t;
-}
-interface PostResponse extends Response {
-  ResBody: { length: number; body: {} };
-}
-
 function setRepository<T extends entity.entity_name_t>(
   entityName: string
 ): Repository<entity.entity_map_t[T]> {
   return getRepository<entity.entity_map_t[T]>(entityName);
 }
 
-app.post("/", (req, res) => {
+app.post("/", (req: express.Request, res: express.Response) => {
   const entity: string = req.body.entity;
   repository = setRepository(entity);
   const query: FindManyOptions = req.body.query;
