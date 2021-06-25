@@ -1,7 +1,6 @@
-# Awesome Project Build with TypeORM
+# Express による API サーバーと typeORM の練習
 
-Steps to run this project:
+### 新環境での初回起動時、必要なこと
 
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+- docker-compose up mySQL サーバーの起動
+- npm-scripts の”init”を実行し、データベースの作成

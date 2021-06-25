@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "init": "cd dist/mysql && node createTable.js && node addData.js",
     "clean": "rimraf dist/*",
     "tsc": "tsc",
     "build": "npm-run-all clean tsc",
-    "start": "cd dist && node index.js"
+    "start": "cd dist/src && node index.js"
   },
   "keywords": [],
   "author": "",
