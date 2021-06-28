@@ -2,14 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Attach to Node Functions",
       "type": "node",
-      "request": "launch",
-      "name": "Launch TypeScript",
-      "program": "${workspaceFolder}/dist/index.js",
-      "preLaunchTask": "Compile TypeScript",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+      "request": "attach",
+      "port": 9229,
+      "preLaunchTask": "func: host start"
     }
   ]
 }
