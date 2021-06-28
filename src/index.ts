@@ -25,10 +25,10 @@ app.listen(3000);
 
 let repository: Repository<entity.User | entity.Book>;
 
-function setRepository<T extends entity.entity_name_t>(
+function setRepository<T extends entity.EntityName>(
   entityName: string
-): Repository<entity.entity_map_t[T]> {
-  return getRepository<entity.entity_map_t[T]>(entityName);
+): Repository<entity.EntityMap[T]> {
+  return getRepository<entity.EntityMap[T]>(entityName);
 }
 
 app.post("/", (req: express.Request, res: express.Response) => {
