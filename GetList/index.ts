@@ -31,8 +31,8 @@ const httpTrigger: AzureFunction = function (
       return getRepository<entity.EntityMap[T]>(entityName);
     }
 
-    const entityName: string = req.body.entity;
-    const query: FindManyOptions = req.body.query;
+    const entityName: string = req.query.entity!;
+    const query: FindManyOptions = JSON.parse(req.query.query!);
     repository = setRepository(entityName);
     const _length = repository.count();
     const _body = repository.find(query);
