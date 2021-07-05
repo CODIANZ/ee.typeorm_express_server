@@ -29,7 +29,7 @@ const connection = createConnection({
   synchronize: true,
   logging: "all",
 });
-
+createConnection();
 let repository: Repository<entity.User | entity.Book>;
 function setRepository<T extends entity.EntityName>(
   entityName: string
@@ -45,7 +45,20 @@ const httpTrigger: AzureFunction = function (
    * CREATE
    */
   if (req.method === "POST") {
-    res = new Promise<void>((resolve, reject) => {});
+    res = new Promise<void>((resolve, reject) => {
+      const request = req.body;
+      repository = setRepository(request.entityName!);
+      const _row = repository.create(request.data);
+      const _create = repository.save(_row);
+      _create
+        .then(() => resolve())
+        .catch((err) => {
+          context.res = {
+            body: err,
+          };
+          reject();
+        });
+    });
   }
 
   /**
@@ -76,7 +89,7 @@ const httpTrigger: AzureFunction = function (
           context.res = {
             body: err,
           };
-          resolve();
+          reject();
         });
     });
   }
@@ -84,28 +97,32 @@ const httpTrigger: AzureFunction = function (
   /**
    * UPDATE
    */
-  // if (req.method === "PUT") {
-  //   res = new Promise<void>((resolve, reject) => {
-  //     const request = req.query;
-  //     repository = setRepository(request.entityName!);
-  //     const data = repository.findOne(request)
-
-  //     const _update = repository.save(data);
-  //     _update
-  //       .then((value) => {
-  //         context.res = {
-  //           body: value,
-  //         };
-  //         resolve();
-  //       })
-  //       .catch((err) => {
-  //         context.res = {
-  //           body: err,
-  //         };
-  //         resolve();
-  //       });
-  //   });
-  // }
+  if (req.method === "PUT") {
+    res = new Promise<void>((resolve, reject) => {
+      const request = req.body;
+      repository = setRepository(request.entityName!);
+      const _row = repository.findOne({ id: request.data.id });
+      _row
+        .then((row) => {
+          row = request.data;
+          // prettier-ignore
+          repository.save(row!)
+            .then(() => resolve())
+            .catch((err) => {
+              context.res = {
+                body: err,
+              };
+              reject();
+            });
+        })
+        .catch((err) => {
+          context.res = {
+            body: err,
+          };
+          reject();
+        });
+    });
+  }
 
   /**
    * DELETE
@@ -127,7 +144,7 @@ const httpTrigger: AzureFunction = function (
           context.res = {
             body: err,
           };
-          resolve();
+          reject();
         });
     });
   }
