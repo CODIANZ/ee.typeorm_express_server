@@ -2,22 +2,24 @@ import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import {
   createConnection,
   FindManyOptions,
+  FindOperator,
   getRepository,
   Like,
   Repository,
 } from "typeorm";
 import * as entity from "../src/entity";
 
-type OrderDesc = "ASC" | "DESC" | undefined;
-type RequestOptions = {
-  entityName?: entity.EntityName;
+type RequestBase = { entityName?: entity.EntityName };
+type FindRequestOptions = RequestBase & {
   orderby?: string;
-  orderdesc?: OrderDesc;
+  orderdesc?: "ASC" | "DESC" | undefined;
   searchColumn?: entity.EntityName;
+  searchType?: FindOperator<entity.EntityName>;
   searchText?: string;
   skip?: number;
   take?: number;
 };
+
 const connection = createConnection({
   type: "mysql",
   host: "localhost",
@@ -66,7 +68,7 @@ const httpTrigger: AzureFunction = function (
    */
   if (req.method === "GET") {
     res = new Promise<void>((resolve, reject) => {
-      const request: RequestOptions = req.query;
+      const request: FindRequestOptions = req.query;
       repository = setRepository(request.entityName!);
       const query: FindManyOptions = {
         where: request.searchColumn
