@@ -45,7 +45,7 @@ const createWhere = (column: entity.EntityName, text: string, type: string) => {
       query = { [column]: text };
       break;
     case "Like":
-      query = { [column]: Like(text) };
+      query = { [column]: Like(`%${text}%`) };
       break;
     case "Not":
       query = { [column]: Not(text) };
@@ -62,6 +62,8 @@ const createWhere = (column: entity.EntityName, text: string, type: string) => {
     case "MoreThanOrEqual":
       query = { [column]: MoreThanOrEqual(text) };
       break;
+    default:
+      query = {};
   }
   return query;
 };

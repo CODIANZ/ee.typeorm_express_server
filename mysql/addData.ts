@@ -15,10 +15,18 @@ createConnection({
 })
   .then(async (connection) => {
     const randomNames: string[] = ["AA", "BB", "CC", "DD", "EE"];
+    const roles: string[] = ["Read", "Write", "Execute"];
     function randomDate(start: Date, end: Date) {
       return new Date(
         start.getTime() + Math.random() * (end.getTime() - start.getTime())
       );
+    }
+
+    const roleRepo = connection.getRepository(entity.Role);
+    for (let i = 0; i < 3; i++) {
+      let role = new entity.Role();
+      role.role = roles[i];
+      await roleRepo.save(role);
     }
     const userRepo = connection.getRepository(entity.User);
     for (let i = 0; i < 300; i++) {
