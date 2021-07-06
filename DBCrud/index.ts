@@ -2,9 +2,13 @@ import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import {
   createConnection,
   FindManyOptions,
-  FindOperator,
   getRepository,
+  LessThan,
+  LessThanOrEqual,
   Like,
+  MoreThan,
+  MoreThanOrEqual,
+  Not,
   Repository,
 } from "typeorm";
 import * as entity from "../src/entity";
@@ -14,7 +18,7 @@ type FindRequestOptions = RequestBase & {
   orderby?: string;
   orderdesc?: "ASC" | "DESC" | undefined;
   searchColumn?: entity.EntityName;
-  searchType?: FindOperator<entity.EntityName>;
+  searchType?: string;
   searchText?: string;
   skip?: number;
   take?: number;
@@ -33,6 +37,35 @@ const connection = createConnection({
 });
 createConnection();
 let repository: Repository<entity.User | entity.Book>;
+
+const createWhere = (column: entity.EntityName, text: string, type: string) => {
+  let query;
+  switch (type) {
+    case "Equal":
+      query = { [column]: text };
+      break;
+    case "Like":
+      query = { [column]: Like(text) };
+      break;
+    case "Not":
+      query = { [column]: Not(text) };
+      break;
+    case "LessThan":
+      query = { [column]: LessThan(text) };
+      break;
+    case "LessThanOrEqual":
+      query = { [column]: LessThanOrEqual(text) };
+      break;
+    case "MoreThan":
+      query = { [column]: MoreThan(text) };
+      break;
+    case "MoreThanOrEqual":
+      query = { [column]: MoreThanOrEqual(text) };
+      break;
+  }
+  return query;
+};
+
 function setRepository<T extends entity.EntityName>(
   entityName: string
 ): Repository<entity.EntityMap[T]> {
@@ -71,8 +104,9 @@ const httpTrigger: AzureFunction = function (
       const request: FindRequestOptions = req.query;
       repository = setRepository(request.entityName!);
       const query: FindManyOptions = {
+        // prettier-ignore
         where: request.searchColumn
-          ? { [request.searchColumn]: Like(`%${request.searchText}%`) }
+          ? createWhere(request.searchColumn,request.searchText!,request.searchType!)
           : {},
         order: request.orderby ? { [request.orderby]: request.orderdesc } : {},
         skip: request.skip,
