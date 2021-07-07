@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "init-w-build": "npm-run-all build init",
     "init": "cd dist/mysql && node createTable.js && node addData.js",
     "clean": "rimraf dist/*",
     "tsc": "tsc",

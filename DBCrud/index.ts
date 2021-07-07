@@ -42,8 +42,8 @@ const connection = createConnection({
   synchronize: true,
   logging: "all",
 });
-createConnection();
-let repository: Repository<entity.User | entity.Book>;
+
+let repository: Repository<entity.User | entity.Book | entity.Role>;
 
 const createWhere = (column: entity.EntityName, text: string, type: string) => {
   let query;
@@ -80,31 +80,12 @@ function setRepository<T extends entity.EntityName>(
 ): Repository<entity.EntityMap[T]> {
   return getRepository<entity.EntityMap[T]>(entityName);
 }
+
 let res: Promise<void>;
 const httpTrigger: AzureFunction = function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
-  /**
-   * CREATE
-   */
-  if (req.method === "POST") {
-    res = new Promise<void>((resolve, reject) => {
-      const request = req.body;
-      repository = setRepository(request.entityName!);
-      const _row = repository.create(request.data);
-      const _create = repository.save(_row);
-      _create
-        .then(() => resolve())
-        .catch((err) => {
-          context.res = {
-            body: err,
-          };
-          reject();
-        });
-    });
-  }
-
   /**
    * READ
    */
@@ -143,30 +124,18 @@ const httpTrigger: AzureFunction = function (
   }
 
   /**
-   * UPDATE
+   * UPDATE,CREATE
    */
-  if (req.method === "PUT") {
+  if (req.method === "POST") {
     res = new Promise<void>((resolve, reject) => {
       const request = req.body;
       repository = setRepository(request.entityName!);
-      const _row = repository.findOne({ id: request.data.id });
-      _row
-        .then((row) => {
-          row = request.data;
-          // prettier-ignore
-          repository.save(row!)
-            .then(() => resolve())
-            .catch((err) => {
-              context.res = {
-                body: err,
-              };
-              reject();
-            });
+      repository
+        .save(request.data)
+        .then(() => {
+          resolve();
         })
-        .catch((err) => {
-          context.res = {
-            body: err,
-          };
+        .catch(() => {
           reject();
         });
     });
@@ -200,4 +169,5 @@ const httpTrigger: AzureFunction = function (
   return res;
 };
 
+createConnection();
 export default httpTrigger;

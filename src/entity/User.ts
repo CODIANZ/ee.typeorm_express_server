@@ -3,7 +3,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToMany,
-  JoinTable
+  JoinTable,
+  DeepPartial,
 } from "typeorm";
 import { Role } from "./Role";
 
@@ -21,7 +22,22 @@ export class User {
   @Column()
   age!: number;
 
-  @ManyToMany((type) => Role)
+  @ManyToMany((type) => Role, { cascade: true })
   @JoinTable()
   roles?: Role[];
 }
+
+type a = DeepPartial<User>;
+
+const u: User = {
+  id: 3333,
+  firstName: "",
+  lastName: "",
+  age: 33,
+  roles: [
+    {
+      id: 3,
+      role: "Read",
+    },
+  ],
+};
