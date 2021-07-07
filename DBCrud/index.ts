@@ -13,8 +13,11 @@ import {
 } from "typeorm";
 import * as entity from "../src/entity";
 
-type RequestBase = { entityName?: entity.EntityName };
-type FindRequestOptions = RequestBase & {
+export type RequestBase = {
+  entityName?: entity.EntityName;
+  relations?: string;
+};
+export type FindRequestOptions = RequestBase & {
   orderby?: string;
   orderdesc?: "ASC" | "DESC" | undefined;
   searchColumn?: entity.EntityName;
@@ -23,6 +26,10 @@ type FindRequestOptions = RequestBase & {
   skip?: number;
   take?: number;
 };
+export type DeleteRequestOptions = RequestBase & {
+  deleteItem: string;
+};
+export type SaveRequestOptions = RequestBase & {};
 
 const connection = createConnection({
   type: "mysql",
@@ -106,6 +113,9 @@ const httpTrigger: AzureFunction = function (
       const request: FindRequestOptions = req.query;
       repository = setRepository(request.entityName!);
       const query: FindManyOptions = {
+        relations: request.relations
+          ? Object.values(JSON.parse(request.relations))
+          : [],
         // prettier-ignore
         where: request.searchColumn
           ? createWhere(request.searchColumn,request.searchText!,request.searchType!)
