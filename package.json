@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "init-w-build": "npm-run-all build init",
     "init": "cd dist/mysql && node createTable.js && node addData.js",
     "clean": "rimraf dist/*",
     "tsc": "tsc",
@@ -23,16 +24,14 @@
     "iconv": "^3.0.0",
     "mysql": "^2.18.1",
     "node-gyp": "^8.1.0",
-    "reflect-metadata": "^0.1.13",
-    "routing-controllers": "^0.9.0",
-    "typeorm": "^0.2.34",
-    "typeorm-routing-controllers-extensions": "^0.2.0"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "typeorm": "^0.2.34",
+    "@codianz/rx": "0.0.2",
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.12",
     "@types/node": "^14.17.3",
-    "nodemon": "^2.0.7",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "ts-node": "^10.0.0",

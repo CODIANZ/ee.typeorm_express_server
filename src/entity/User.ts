@@ -1,9 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+  DeepPartial,
+} from "typeorm";
+import { Role } from "./Role";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+  readonly id?: number;
 
   @Column()
   firstName!: string;
@@ -13,4 +21,23 @@ export class User {
 
   @Column()
   age!: number;
+
+  @ManyToMany((type) => Role, { cascade: true })
+  @JoinTable()
+  roles?: Role[];
 }
+
+type a = DeepPartial<User>;
+
+const u: User = {
+  id: 3333,
+  firstName: "",
+  lastName: "",
+  age: 33,
+  roles: [
+    {
+      id: 3,
+      role: "Read",
+    },
+  ],
+};
