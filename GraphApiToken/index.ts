@@ -36,9 +36,9 @@ const httpTrigger: AzureFunction = async function (
     from(AzureAuthServer(context, req))
     .pipe(mergeMap((auth) => {
         if(auth.extension_ReadAccount || auth.extension_WriteAccount) return of(void 0);
-        else return throwError("!jobTitle");
+        else return throwError("Permission Error");
       }))
-      .pipe(mergeMap((x) => {
+      .pipe(mergeMap(() => {
         return from(axios({
           method:"POST",
           url:`https://login.microsoftonline.com/${apiSettings.tenantID}/oauth2/v2.0/token`,
