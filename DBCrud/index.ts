@@ -12,9 +12,9 @@ import {
 } from "typeorm";
 import { BehaviorSubject, from, NEVER, Observable, of, throwError } from "rxjs";
 import { mergeMap, take } from "rxjs/operators";
-import { AzureAuthServer } from "../test/AzureAuthServer";
+import { AzureAuthServer } from "../common/AzureAuthServer";
 import * as entity from "../src/entity";
-import { dbDefaultConnection } from "./Connection";
+import { dbDefaultConnection } from "../common/Connection";
 
 export type RequestBase = {
   entityName?: entity.EntityName;

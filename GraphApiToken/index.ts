@@ -4,7 +4,7 @@ import axios from "axios";
 import { from, of, throwError } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 import { URLSearchParams } from "url";
-import { AzureAuthServer } from "../test/AzureAuthServer";
+import { AzureAuthServer } from "../common/AzureAuthServer";
 
 const apiSettings = {
   clientID: "881fab39-5488-4d6a-927d-0dad6a784889",
